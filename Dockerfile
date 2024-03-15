@@ -1,15 +1,13 @@
-#build stage
-FROM golang:alpine AS builder
-RUN apk add --no-cache git
-WORKDIR /go/src/app
-COPY . .
-RUN go get -d -v ./...
-RUN go build -o /go/bin/app -v ./...
+# Use a minimal base image
+FROM alpine:latest  
 
-#final stage
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-COPY --from=builder /go/bin/app /app
-ENTRYPOINT /app
-LABEL Name=golangbe Version=0.0.1
+WORKDIR /root/
+
+# Copy the pre-built binary file into the image
+COPY main .
+
+# Expose port 8080 to the outside world (if needed)
 EXPOSE 8080
+
+# Command to run the executable
+CMD ["./main"]

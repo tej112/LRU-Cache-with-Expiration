@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -193,10 +194,14 @@ func main() {
 		w.Write([]byte(res.String()))
 
 	})
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default port
+	}
 
 	// Enable CORS
-
-	http.ListenAndServe(":8080", handler)
+	log.Println("Listening on port " + port)
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
